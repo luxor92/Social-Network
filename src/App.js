@@ -10,7 +10,6 @@ import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
 import DialogsContainer from "./components/Dialogs/DialogsContainer";
 import UsersContainer from "./components/Users/UsersContainer";
-import Users from "./components/Users/UsersContainer";
 
 const App = (props) => {
     return (
