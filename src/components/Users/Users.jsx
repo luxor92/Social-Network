@@ -1,35 +1,50 @@
+import styles from './Users.module.css';
 import React from "react";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import "./App.css";
-import Header from "./components/Header/Header";
-import Navbar from "./components/Navbar/Navbar";
-import Profile from "./components/Profile/Profile";
-import Dialogs from "./components/Dialogs/Dialogs";
-import News from "./components/News/News";
-import Music from "./components/Music/Music";
-import Settings from "./components/Settings/Settings";
-import DialogsContainer from "./components/Dialogs/DialogsContainer";
+import axios from "axios";
 
-const App = (props) => {
-    // Для css-стилей используется className внутри тегов
-    // Компонента является функцией, принимающей пропсы на входе и возвращающая JSX-разметку на выходе
-    // Route используются для отрисовки компонент при смене URL'а
-    // В каждую компоненту передаются только необходимые для неё пропсы
-    return (
-        <div className='app-wrapper'>
-            <Header/>
-            <Navbar/>
-            <div className='app-wrapper-content'>
-                <Routes>
-                    <Route path='/profile' element={<Profile store={props.store}/>}/>
-                    <Route path='/dialogs' element={<DialogsContainer store={props.store} state={props.state}/>}/>
-                    <Route path='/news' element={<News/>}/>
-                    <Route path='/music' element={<Music/>}/>
-                    <Route path='/settings' element={<Settings/>}/>
-                </Routes>
-            </div>
+class Users extends React.Component {
+    getUsers = () => {
+        if (this.props.users.length === 0) {
+            axios.get("https://social-network.samuraijs.com/api/1.0/users")
+                .then(response => {
+                    this.props.setUsers(response.data.items)
+                });
+        }
+    }
+    render () {
+        debugger;
+        return <div>
+            <button onClick={this.getUsers}>Get users</button>
+            {
+                this.props.users.map(u => <div key={u.id}>
+                <span>
+                    <div>
+                        <img src={u.photos.small != null ? u.photos.small : 'https://vokrug.tv/pic/news/6/b/d/a/6bdae6bfa22e5dd4d1694752b3ba23ac.jpg'}
+                             className={styles.userPhoto}/>}
+                    </div>
+                    <div>
+                        {u.followed
+                            ? <button onClick={() => {
+                                this.props.unfollow(u.id)
+                            }}>Unfollow</button>
+                            : <button onClick={() => {
+                                this.props.follow(u.id)
+                            }}>Follow</button>}
+                    </div>
+                </span><span>
+                    <span>
+                        <div>{u.name}</div>
+                        <div>{u.status}</div>
+                    </span>
+                    <span>
+                        <div>{"u.location.country"}</div>
+                        <div>{"u.location.city"}</div>
+                    </span>
+                </span>
+                </div>)
+            }
         </div>
-    );
-};
+    };
+}
 
-export default App;
+export default Users
