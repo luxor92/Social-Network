@@ -1,44 +1,57 @@
-const SEND_MESSAGE = 'SEND-MESSAGE';
-const UPDATE_NEW_MESSAGE_BODY = 'UPDATE-NEW-MESSAGE-BODY'
+const FOLLOW = 'FOLLOW';
+const UNFOLLOW = 'UNFOLLOW';
+const SET_USERS = 'SET_USERS';
+const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
+const SET_TOTAL_USERS_COUNT = 'SET_TOTAL_USERS_COUNT';
 
 let initialState = {
-    dialogs: [
-        {id: 1, name: 'Jonny'},
-        {id: 2, name: 'Kenny'},
-        {id: 3, name: 'Jinx'},
-        {id: 4, name: 'Kaisa'},
-        {id: 5, name: 'Tom'}
-    ],
+    users: [ ],
+    pageSize: 5,
+    totalUsersCount: 20,
+    currentPage: 50
+};
 
-    messages: [
-        {id: 1, message: 'Hello world'},
-        {id: 2, message: 'How are you'},
-        {id: 3, message: 'Do you have hash?'}
-    ],
-    newMessageBody: ''
-}
-
-const dialogsReducer = (state = initialState, action) => {
-
-    switch (action.type) {
-        case SEND_MESSAGE:
-            let body = state.newMessageBody;
+const usersReducer = (state = initialState, action) => {
+    switch(action.type) {
+        case FOLLOW:
             return {
                 ...state,
-                newMessageBody: '',
-                messages: [...state.messages, {id: 4, message: body}]
+                users: state.users.map( u =>  {
+                    if (u.id === action.userId) {
+                        return {...u, followed: true}
+                    }
+                    return u;
+                })
             }
-        case UPDATE_NEW_MESSAGE_BODY:
+        case UNFOLLOW:
             return {
                 ...state,
-                newMessageBody: action.body
+                users: state.users.map( u =>  {
+                    if (u.id === action.userId) {
+                        return {...u, followed: false}
+                    }
+                    return u;
+                })
             }
+        case SET_USERS: {
+            return { ...state, users: action.users }
+        }
+        case SET_CURRENT_PAGE: {
+            return { ...state, currentPage: action.currentPage}
+        }
+        case SET_TOTAL_USERS_COUNT: {
+            return { ...state, totalUsersCount: action.count}
+        }
         default:
             return state;
     }
 }
 
-export const sendMessageCreator = () => ({type:SEND_MESSAGE})
-export const updateNewMessageBodyCreator = (body) => ({type:UPDATE_NEW_MESSAGE_BODY, body: body})
 
-export default dialogsReducer;
+export const followAC = (userId) => ({type: FOLLOW, userId })
+export const unfollowAC = (userId) => ({type: UNFOLLOW, userId })
+export const setUsersAC = (users) => ({type: SET_USERS, users })
+export const setCurrentPageAC = (currentPage) => ({type: SET_CURRENT_PAGE, currentPage: currentPage })
+export const setUsersTotalCountAC = (totalUsersCount) => ({type: SET_TOTAL_USERS_COUNT, count: totalUsersCount })
+
+export default usersReducer;

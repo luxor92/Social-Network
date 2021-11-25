@@ -1,20 +1,37 @@
 import styles from './Users.module.css';
 import React from "react";
-import axios from "axios";
+import * as axios from "axios";
 
 class Users extends React.Component {
-    getUsers = () => {
-        if (this.props.users.length === 0) {
-            axios.get("https://social-network.samuraijs.com/api/1.0/users")
+    componentDidMount() {
+    axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`)
                 .then(response => {
                     this.props.setUsers(response.data.items)
+                    this.props.setUsersTotalCount(response.data.totalCount/1000)
                 });
         }
+
+    onPagedChanged = (pageNumber) => {
+        this.props.setCurrentPage(pageNumber);
+        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count=${this.props.pageSize}`)
+            .then(response => {
+                this.props.setUsers(response.data.items)
+            });
     }
     render () {
-        debugger;
+        let pagesCount = Math.ceil(this.props.totalUsersCount / this.props.pageSize);
+        let pages = [];
+        for (let i=1; i <= pagesCount; i++){
+            pages.push(i);
+        }
+
         return <div>
-            <button onClick={this.getUsers}>Get users</button>
+            <div>
+                {pages.map(p => {
+                    return <span className={this.props.currentPage === p && styles.selectedPage}
+                                 onClick={(e) => {this.onPagedChanged(p)}}>{p}</span>
+                })}
+            </div>
             {
                 this.props.users.map(u => <div key={u.id}>
                 <span>

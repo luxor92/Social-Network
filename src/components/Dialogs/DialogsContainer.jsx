@@ -1,42 +1,24 @@
-import s from './Dialogs.module.css'
 import React from "react";
-import Dialog from "./Dialog/Dialog";
-import Message from "./Message/Message";
 import {sendMessageCreator, updateNewMessageBodyCreator} from "../../redux/dialogs_reducer";
+import Dialogs from "./Dialogs";
+import {connect} from "react-redux";
 
-const Dialogs = (props) => {
-    let newMessageBody = props.state.dialogsPage.newMessageBody;
-
-    let onSendMessageClick = () => {
-        props.dispatch(sendMessageCreator())
+let mapStateToProps = (state) => {
+    return {
+        dialogsPage: state.dialogsPage
     }
-    let onNewMessageChange = (e) => {
-        let body = e.target.value;
-        props.dispatch(updateNewMessageBodyCreator(body));
-    };
-
-    let dialogsElements = props.state.dialogsPage.dialogs.map(d => <Dialog name={d.name} id={d.id}/>);
-    let messagesElements = props.state.dialogsPage.messages.map(m => <Message message={m.message}/>);
-
-    return (
-        <div className={s.dialogs}>
-            <div className={s.dialogsItems}>
-                {dialogsElements}
-            </div>
-            <div className={s.messagesItems}>
-                <div>{messagesElements}</div>
-                <div>
-                    <div><textarea value={newMessageBody}
-                                   placeholder='Enter your message'
-                                   onChange={onNewMessageChange}>
-                    </textarea></div>
-                    <div>
-                        <button onClick={onSendMessageClick}>Send</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-)
+}
+let mapDispatchToProps = (dispatch) => {
+    return {
+        sendMessage: () => {
+            dispatch(sendMessageCreator());
+        },
+        updateNewMessageBody: (body) => {
+            dispatch(updateNewMessageBodyCreator(body));
+        }
+    }
 }
 
-export default Dialogs
+const DialogsContainer = connect(mapStateToProps, mapDispatchToProps)(Dialogs);
+
+export default DialogsContainer;
