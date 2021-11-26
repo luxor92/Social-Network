@@ -1,6 +1,7 @@
 import s from './ProfileInfo.module.css'
 
 const ProfileInfo = (props) => {
+
     return (
         <div>
             <div><img className={s.header_content}
