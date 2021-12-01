@@ -1,15 +1,15 @@
-.nav{
+.nav {
     grid-area: n;
     background-color: teal;
     padding: 10px;
 }
 
-  .item {
-      color: white;
-      text-decoration: none;
-  }
+.item {
+    color: white;
+    text-decoration: none;
+}
 
-  .active{
-      color: gold;
-      text-decoration: none;
-  }
+.active {
+    color: gold;
+    text-decoration: none;
+}

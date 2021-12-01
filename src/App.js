@@ -9,22 +9,23 @@ import DialogsContainer from "./components/Dialogs/DialogsContainer";
 import UsersContainer from "./components/Users/UsersContainer";
 import ProfileContainer from "./components/Profile/ProfileContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
-import {Routes} from "react-router";
+import Login from "./components/Login/Login";
 
 const App = (props) => {
+    // Для react-router-dom v6 необходимо обернуть Route-компоненты в Routes
+    // В свойствах: path='/profile/*' element={<ProfileContainer />
     return (
         <div className='app-wrapper'>
             <HeaderContainer/>
             <Navbar/>
             <div className='app-wrapper-content'>
-                <Routes>
-                    <Route path='/profile/' element={<ProfileContainer />}/>
-                    <Route path='/dialogs' element={<DialogsContainer />}/>
-                    <Route path='/news' element={<News/>}/>
-                    <Route path='/music' element={<Music/>}/>
-                    <Route path='/settings' element={<Settings/>}/>
-                    <Route path='/users' element={<UsersContainer/>}/>
-                </Routes>
+                    <Route path='/profile/:userId?' render={ () => <ProfileContainer /> }/>
+                    <Route path='/dialogs' render={ () => <DialogsContainer /> }/>
+                    <Route path='/news' render={ () => <News /> }/>
+                    <Route path='/music' render={ () => <Music /> }/>
+                    <Route path='/settings' render={ () => <Settings /> }/>
+                    <Route path='/users' render={ () => <UsersContainer /> }/>
+                    <Route path='/login' render={ () => <Login /> }/>
             </div>
         </div>
     );

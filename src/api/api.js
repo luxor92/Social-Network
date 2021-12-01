@@ -1,4 +1,5 @@
 import * as axios from "axios";
+import warning from "react-redux/lib/utils/warning";
 
 const instance = axios.create({
     baseURL: "https://social-network.samuraijs.com/api/1.0/",
@@ -21,8 +22,9 @@ export const usersAPI = {
         return instance.delete(`follow/${userId}`)
             },
 
-    getProfile () {
-        return instance.get("profile/2")
+    getProfile (userId) {
+        console.warn("Obsolete method. Use profileAPI object")
+        return profileAPI.getProfile(userId);
     }
 }
 
@@ -30,4 +32,18 @@ export const authAPI = {
      me() {
         return instance.get(`auth/me`)
     }
+}
+
+export const profileAPI = {
+    getProfile (userId) {
+        return instance.get("profile/" + userId)
+    },
+
+    getStatus (userId) {
+        return instance.get("profile/status/" + userId)
+    },
+
+    updateStatus (status) {
+         return instance.put("profile/status", { status: status })
+     }
 }

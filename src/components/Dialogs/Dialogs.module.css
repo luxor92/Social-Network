@@ -3,26 +3,24 @@
     grid-template-columns: 2fr 10fr;
 }
 
-.dialogsItems {
-    padding: 10px;
-}
-
-.dialog {
+.dialogItems {
     color: white;
     text-decoration: none;
-    font-family: "Comic Sans MS";
+    font-family: "Verdana";
 }
 
 .dialogsItems .active {
-    color: gold;
+    color: darkgreen;
     text-decoration: none;
 }
 
-.message {
+.messages {
     color: white;
-    font-style: italic;
+    font-style: bold;
 }
 
 .messagesItems {
     padding: 10px;
+    color: white;
+    font-style: bold;
 }

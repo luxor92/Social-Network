@@ -2,6 +2,7 @@ import styles from './Users.module.css';
 import React from "react";
 import {NavLink} from "react-router-dom";
 import {follow, unfollow} from "../../redux/users_reducer";
+import s from "../Navbar/Navbar.module.css";
 
 let Users = (props) => {
     let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize);
