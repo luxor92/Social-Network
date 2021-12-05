@@ -1,5 +1,5 @@
 import s from "./Music.module.css"
-import {ErrorMessage, Field, Form, Formik, FieldArray} from "formik";
+import {ErrorMessage, Field, Form, Formik, FieldArray, FastField} from "formik";
 import * as Yup from "yup";
 
 const initialValues = {
@@ -28,6 +28,11 @@ const validationSchema = Yup.object({
     address: ""
 })
 
+const validateComments = value => {
+    let error
+    if(!value){error="Required"}
+    return error
+}
 function TextError(props) {
     return (
         <div className={s.error}>
@@ -43,7 +48,13 @@ const Music = () => {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
+            validateOnChange={false}
+            // validateOnMount // Валидация всех форм
+            // validateOnBlur={false}
             className={s.wrapperform}>
+            {formik => {
+                console.log("Formik props", formik)
+                return (
             <Form>
                 <div className={s.formcontrol}>
                     <label htmlFor={"name"} className={s.label}> Name </label>
@@ -78,15 +89,16 @@ const Music = () => {
 
                 <div className={s.formcontrol}>
                     <label htmlFor={"comments"} className={s.label}>Comments</label>
-                    <Field as={"textarea"} id={"comments"} name={"comments"} className={s.input}/>
+                    <Field as={"textarea"} id={"comments"} name={"comments"} className={s.input} validate={validateComments}/>
+                    <ErrorMessage name={"comments"} component={TextError}/>
                 </div>
 
                 <div className={s.formcontrol}>
                     <label htmlFor={"Address"} className={s.label}>Address</label>
-                    <Field name={"address"}>
+                    <FastField name={"address"}>
                         {
                             (props) => {
-                                const {field, form, meta} = props
+                                const {field, meta} = props
                                 console.log("Render props", props)
                                 return (
                                     <div>
@@ -96,7 +108,7 @@ const Music = () => {
                                 )
                             }
                         }
-                    </Field>
+                    </FastField>
                 </div>
 
                 <div className={s.formcontrol}>
@@ -156,8 +168,10 @@ const Music = () => {
                     </FieldArray>
                 </div>
 
-                <button type={"submit"} className={s.formcontrol}>Submit</button>
-            </Form>
+                <button type={"submit"} className={s.formcontrol} disabled={!(formik.dirty && formik.isValid)}>Submit</button>
+
+            </Form>)
+            }}
         </Formik>
 )
 }

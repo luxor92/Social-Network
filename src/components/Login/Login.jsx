@@ -1,20 +1,29 @@
 import React from "react";
-import {ErrorMessage, Field, Form, Formik, useFormik} from "formik";
-import s from "../News/News.module.css";
+import {ErrorMessage, Field, Form, Formik} from "formik";
+import s from "./Login.module.css";
 import * as Yup from "yup"
+import {connect} from "react-redux";
+import {login, logout} from "../../redux/auth_reducer";
 
 const Login = (props) => {
 
     const initialValues = {
-        login: "",
+        email: "",
         password: "",
         rememberMe: false,
     }
-    const onSubmit = values => {
-        console.log(values)
+    const onSubmit = (formData) => {
+        props.login(formData.email, formData.password, formData.rememberMe)
+        console.log(formData.email)
     }
+/*    const onSubmit = values => {
+        props.login(values.email, values.password, values.rememberMe)
+        console.log(values)
+    }*/
     const validationSchema = Yup.object({
-      login: Yup.string().required("Enter your login to authorization"),
+      email: Yup.string()
+          .required("Enter your login to authorization")
+          .email('Invalid email'),
       password: Yup.string()
           .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
           .min(8, "Minimal length - 8 symbols")
@@ -32,30 +41,29 @@ const Login = (props) => {
         }
     })
     console.log("Formik changes", formik.values)*/
-
     return <div>
-        <h1>LOGIN</h1>
+        <div className={s.formcontrol}><h2>LOGIN</h2></div>
         <Formik
             initialValues={initialValues}
             onSubmit={onSubmit}
             validationSchema={validationSchema}
             className={s.wrapperform}>
             <Form>
-                <div>
-                    <Field type={"text"} id={"login"} name={"login"} placeholder={"Login"}/>
-                    <ErrorMessage name={"login"}/>
+                <div className={s.formcontrol}>
+                    <Field type={"text"} id={"email"} name={"email"} placeholder={"E-mail"}/>
+                    <ErrorMessage name={"email"}/>
                 </div>
-                <div>
+                <div className={s.formcontrol}>
                     <Field type={"password"} id={"password"} name={"password"} placeholder={"Password"}/>
                     <ErrorMessage name={"password"}/>
                 </div>
-                <div>
+                <div className={s.formcontrol}>
                     <Field type={"checkbox"} id={"rememberMe"} name={"rememberMe"}/>
                     <ErrorMessage name={"rememberMe"}/>
                     <label htmlFor={"rememberMe"}> Remember Me </label>
                 </div>
                 <div>
-                    <button type={"submit"}>Login</button>
+                    <button type={"submit"} className={s.formcontrol}>Login</button>
                 </div>
             </Form>
         </Formik>
@@ -63,4 +71,7 @@ const Login = (props) => {
     </div>
 }
 
-export default Login;
+const mapStateToProps = (state) => ({
+    isAuth: state.auth.isAuth
+})
+export default connect(mapStateToProps, {login, logout})(Login);

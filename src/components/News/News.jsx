@@ -10,7 +10,7 @@ const initialValues = {
 const onSubmit = values => {
     console.log("Formik state", values)
 };
-const validate = values => {
+/*const validate = values => {
     let errors = {}
 
     if (!values.name) {
@@ -27,7 +27,7 @@ const validate = values => {
         errors.channel = "Required"
     }
     return errors
-}
+}*/
 
 // Если через Yup
 const validationSchema = Yup.object({

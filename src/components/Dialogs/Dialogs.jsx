@@ -14,8 +14,10 @@ const Dialogs = (props) => {
     const initialValues = {
         newMessageBody: "",
     };
-    const onSubmit = values => {
+    const onSubmit = (values, onSubmitProps) => {
         addNewMessage(values)
+        console.log("Submit props", onSubmitProps)
+        onSubmitProps.setSubmitting(false)
     };
     const validationSchema = Yup.object({
         newMessageBody: Yup.string()
@@ -42,6 +44,9 @@ const Dialogs = (props) => {
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={onSubmit}>
+                    {formik => {
+                        console.log("Formik props", formik)
+                        return (
                     <Form>
                         <div>
                             <Field as={"textarea"}
@@ -52,8 +57,8 @@ const Dialogs = (props) => {
                             <div><ErrorMessage name={"newMessageBody"}/></div>
                         </div>
 
-                        <button type={"submit"}>Send</button>
-                    </Form>
+                        <button type={"submit"} disabled={! formik.isValid || formik.isSubmitting}>Send</button>
+                    </Form>)}}
                 </Formik>
 
             </div>

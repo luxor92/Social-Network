@@ -1,0 +1,38 @@
+
+.wrapperform{
+    display: flex;
+    justify-content: left;
+}
+
+.label{
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.input {
+    display: block;
+    width: 300px;
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: white;
+    color: #555555;
+    line-height: 1.428;
+    border: 2px solid grey;
+    border-radius: 4px;
+    /*
+    margin-bottom: 20px;
+    */
+}
+
+.formcontrol{
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.error{
+    color: red;
+    font-weight: normal;
+    font-size: 1rem;
+}
