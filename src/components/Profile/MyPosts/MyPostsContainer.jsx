@@ -15,8 +15,8 @@ const mapDispatchToProps = (dispatch) => {
             let action = updateNewPostAC(text);
             dispatch(action);
         },
-        addPost: () => {
-            dispatch(addPostAC());
+        addPost: (newPostElement) => {
+            dispatch(addPostAC(newPostElement));
         }
     }
 }

@@ -3,40 +3,59 @@ import React from "react";
 import Dialog from "./Dialog/Dialog";
 import Message from "./Message/Message";
 import {Redirect} from "react-router-dom";
+import {ErrorMessage, Field, Form, Formik} from "formik"
+import * as Yup from "yup";
 
 const Dialogs = (props) => {
+    let addNewMessage = (values) => {
+        props.sendMessage(values.newMessageBody)
+    }
+
+    const initialValues = {
+        newMessageBody: "",
+    };
+    const onSubmit = values => {
+        addNewMessage(values)
+    };
+    const validationSchema = Yup.object({
+        newMessageBody: Yup.string()
+            .required("Empty message")
+            .max(50, "Too long, bro!")
+    })
+
     let state = props.dialogsPage;
 
-    let dialogsElements = state.dialogs.map( d => <Dialog name={d.name} key={d.id} id={d.id} />  );
-    let messagesElements = state.messages.map( m => <Message message={m.message} key={m.id} /> );
-    let newMessageBody = state.newMessageBody;
-
-    let onSendMessageClick = () => {
-        props.sendMessage();
-    }
-
-    let onNewMessageChange = (e) => {
-        let body = e.target.value;
-        props.updateNewMessageBody(body);
-    }
+    let dialogsElements = state.dialogs.map(d => <Dialog name={d.name} key={d.id} id={d.id}/>);
+    let messagesElements = state.messages.map(m => <Message message={m.message} key={m.id}/>);
 
     if (props.isAuth === false) return <Redirect to="/login"/>
 
     return (
         <div className={s.dialogs}>
             <div className={s.dialogsItems}>
-                { dialogsElements }
+                {dialogsElements}
             </div>
             <div className={s.messages}>
-                <div>{ messagesElements }</div>
-                <div>
-                    <div>
-                        <textarea value={newMessageBody}
-                                   onChange={onNewMessageChange}
-                                   placeholder='Enter your message'></textarea>
-                    </div>
-                    <div><button onClick={onSendMessageClick}>Send</button></div>
-                </div>
+                <div>{messagesElements}</div>
+
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={onSubmit}>
+                    <Form>
+                        <div>
+                            <Field as={"textarea"}
+                                   id={"newMessageBody"}
+                                   name={"newMessageBody"}
+                                   placeholder={"Enter your message"}
+                            />
+                            <div><ErrorMessage name={"newMessageBody"}/></div>
+                        </div>
+
+                        <button type={"submit"}>Send</button>
+                    </Form>
+                </Formik>
+
             </div>
         </div>
     )
