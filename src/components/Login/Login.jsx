@@ -4,6 +4,7 @@ import s from "./Login.module.css";
 import * as Yup from "yup"
 import {connect} from "react-redux";
 import {login, logout} from "../../redux/auth_reducer";
+import {Redirect} from "react-router-dom";
 
 const Login = (props) => {
 
@@ -12,8 +13,8 @@ const Login = (props) => {
         password: "",
         rememberMe: false,
     }
-    const onSubmit = (formData) => {
-        props.login(formData.email, formData.password, formData.rememberMe)
+    const onSubmit = (formData, {setStatus}) => {
+        props.login(formData.email, formData.password, formData.rememberMe, setStatus)
         console.log(formData.email)
     }
 /*    const onSubmit = values => {
@@ -39,8 +40,12 @@ const Login = (props) => {
         onSubmit: values => {
             console.log("Formik state", values)
         }
-    })
-    console.log("Formik changes", formik.values)*/
+    })*/
+
+    if (props.isAuth) {
+        return <Redirect to={"/profile"}/>
+    }
+    else {
     return <div>
         <div className={s.formcontrol}><h2>LOGIN</h2></div>
         <Formik
@@ -48,6 +53,7 @@ const Login = (props) => {
             onSubmit={onSubmit}
             validationSchema={validationSchema}
             className={s.wrapperform}>
+            {({status}) => (
             <Form>
                 <div className={s.formcontrol}>
                     <Field type={"text"} id={"email"} name={"email"} placeholder={"E-mail"}/>
@@ -56,6 +62,7 @@ const Login = (props) => {
                 <div className={s.formcontrol}>
                     <Field type={"password"} id={"password"} name={"password"} placeholder={"Password"}/>
                     <ErrorMessage name={"password"}/>
+                    {status}
                 </div>
                 <div className={s.formcontrol}>
                     <Field type={"checkbox"} id={"rememberMe"} name={"rememberMe"}/>
@@ -65,10 +72,10 @@ const Login = (props) => {
                 <div>
                     <button type={"submit"} className={s.formcontrol}>Login</button>
                 </div>
-            </Form>
+            </Form> )}
         </Formik>
 
-    </div>
+    </div>}
 }
 
 const mapStateToProps = (state) => ({
