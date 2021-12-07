@@ -1,5 +1,5 @@
 import s from './ProfileInfo.module.css'
-import ProfileStatus from "./ProfileStatus.jsx"
+import ProfileStatusHooks from "./ProfileStatusHooks";
 
 const ProfileInfo = (props) => {
 
@@ -9,7 +9,7 @@ const ProfileInfo = (props) => {
                       src='https://moscowprivatetours.com/wp-content/uploads/2021/05/background.webp'></img></div>*/}
             <div className={s.descriptionBlock}>
                 <img alt="" src={props.profile.photos.large}/>
-                <ProfileStatus status={props.status} updateStatus={props.updateStatus}/>
+                <ProfileStatusHooks status={props.status} updateStatus={props.updateStatus}/>
             </div>
         </div>
     )
