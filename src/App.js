@@ -27,19 +27,19 @@ class App extends React.Component {
             // Для react-router-dom v6 необходимо обернуть Route-компоненты в Routes
             // В свойствах: path='/profile/*' element={<ProfileContainer />
             return (
-                        <div className='app-wrapper'>
-                            <HeaderContainer/>
-                            <Navbar/>
-                            <div className='app-wrapper-content'>
-                                <Route path='/profile/:userId?' render={() => <ProfileContainer/>}/>
-                                <Route path='/dialogs' render={() => <DialogsContainer/>}/>
-                                <Route path='/news' render={() => <News/>}/>
-                                <Route path='/music' render={() => <Music/>}/>
-                                <Route path='/settings' render={() => <Settings/>}/>
-                                <Route path='/users' render={() => <UsersContainer/>}/>
-                                <Route path='/login' render={() => <Login/>}/>
-                            </div>
-                        </div>
+                <div className='app-wrapper'>
+                    <HeaderContainer/>
+                    <Navbar/>
+                    <div className='app-wrapper-content'>
+                        <Route path='/profile/:userId?' render={() => <ProfileContainer/>}/>
+                        <Route path='/dialogs' render={() => <DialogsContainer/>}/>
+                        <Route path='/news' render={() => <News/>}/>
+                        <Route path='/music' render={() => <Music/>}/>
+                        <Route path='/settings' render={() => <Settings/>}/>
+                        <Route path='/users' render={() => <UsersContainer/>}/>
+                        <Route path='/login' render={() => <Login/>}/>
+                    </div>
+                </div>
             );
         }
     }
@@ -50,4 +50,18 @@ const mapStateToProps = (state) => ({
     initialized: state.app.initialized
 })
 
-export default connect(mapStateToProps, {initializeApp})(App);
+// export default connect(mapStateToProps, {initializeApp})(App);
+
+let AppContainer = connect(mapStateToProps, {initializeApp})(App);
+
+let SocialNetworkApp = (props) => {
+    return (
+        <BrowserRouter>
+            <Provider store={store}>
+                <AppContainer/>
+            </Provider>
+        </BrowserRouter>
+    )
+}
+
+export default SocialNetworkApp
