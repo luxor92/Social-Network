@@ -16,7 +16,7 @@ const MyPosts = (props) => {
     })
 
     let postsElements =
-        props.posts.map( p => <Post message={p.message} likesCount={p.likesCount}/>);
+        props.posts.map( p => <Post message={p.message} key={p.index} likesCount={p.likesCount}/>);
 
     let onAddPost = (newPostElement) => {
         props.addPost(newPostElement);

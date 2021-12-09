@@ -4,6 +4,7 @@ const ADD_POST = 'ADD-POST';
 const UPDATE_NEW_POST = 'UPDATE-NEW-POST';
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
 const SET_STATUS = 'SET_STATUS';
+const DELETE_POST = 'DELETE_POST';
 
 let initialState = {
     posts: [
@@ -13,15 +14,14 @@ let initialState = {
     newPostText: "",
     profile: null,
     status: ""
-}
-;
+};
 
 const profileReducer = (state = initialState, action) => {
 
     switch(action.type) {
         case ADD_POST: {
             let newPost = {
-                id: 5,
+                id: 4,
                 message: action.newPostElement,
                 likesCount: 0
             };
@@ -48,6 +48,12 @@ const profileReducer = (state = initialState, action) => {
                 status: action.status
             }
         }
+        case DELETE_POST: {
+            return {
+                ...state,
+                posts: state.posts.filter(p => p.id != action.postId)
+            }
+        }
         default:
             return state;
     }
@@ -58,6 +64,7 @@ export const addPostAC = (newPostElement) => ({type: ADD_POST, newPostElement: n
 export const updateNewPostAC = (text) => ({type: UPDATE_NEW_POST, newText: text})
 export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile})
 export const setStatus = (status) => ({type: SET_STATUS, status})
+export const deletePostAC = (postId) => ({type: DELETE_POST, postId})
 
 
 export const getUserProfile = (userId) => {
