@@ -13,8 +13,8 @@ const TOGGLE_IS_FOLLOWING_PROGRESS = 'social-network/users/TOGGLE_IS_FOLLOWING_P
 // Данные (по сути пропсы), которые мы отправляем в раздел Users
 let initialState = {
     users: [],
-    pageSize: 5,
-    totalUsersCount: 20,
+    pageSize: 10,
+    totalUsersCount: 0,
     currentPage: 1,
     isFetching: true,
     followingInProgress: [] // Disable кнопки, пока страница прогружает запросы
@@ -90,9 +90,8 @@ export const requestUsers = (page, pageSize) => {
         dispatch(setCurrentPage(page));
 
         let data = await usersAPI.getUsers(page, pageSize);
-
         dispatch(setUsers(data.items))
-        dispatch(setUsersTotalCount(data.totalCount / 500));
+        dispatch(setUsersTotalCount(data.totalCount));
         dispatch(toggleIsFetching(false))
     }
 }
