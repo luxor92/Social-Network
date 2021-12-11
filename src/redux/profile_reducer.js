@@ -5,6 +5,9 @@ const UPDATE_NEW_POST = 'social-network/profile/UPDATE-NEW-POST';
 const SET_USER_PROFILE = 'social-network/profile/SET_USER_PROFILE';
 const SET_STATUS = 'social-network/profile/SET_STATUS';
 const DELETE_POST = 'social-network/profile/DELETE_POST';
+const SAVE_PHOTO_SUCCESS = `social-network/profile/SAVE_PHOTO_SUCCESS`;
+const SAVE_PROFILE_SUCCESS = `social-network/profile/SAVE_PROFILE_SUCCESS`
+
 
 let initialState = {
     posts: [
@@ -54,6 +57,18 @@ const profileReducer = (state = initialState, action) => {
                 posts: state.posts.filter(p => p.id !== action.postId)
             }
         }
+        case SAVE_PHOTO_SUCCESS: {
+            return {
+                ...state,
+                profile: {...state.profile, photos: action.photos}
+            }
+        }
+        case SAVE_PROFILE_SUCCESS: {
+            return {
+                ...state,
+                profile: action.profile
+            }
+        }
         default:
             return state;
     }
@@ -65,15 +80,17 @@ export const updateNewPostAC = (text) => ({type: UPDATE_NEW_POST, newText: text}
 export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile})
 export const setStatus = (status) => ({type: SET_STATUS, status})
 export const deletePostAC = (postId) => ({type: DELETE_POST, postId})
+export const savePhotoSuccessAC = (photos) => ({type: SAVE_PHOTO_SUCCESS, photos})
+export const saveProfileSuccessAC = (profile) => ({type: SAVE_PROFILE_SUCCESS, profile})
 
 
+// Thunk-creators
 export const getUserProfile = (userId) => {
     return async (dispatch) => {
         let response = await usersAPI.getProfile(userId)
         dispatch(setUserProfile(response.data))
     }
 }
-
 export const getStatus = (userId) => {
 
     return (dispatch) => {
@@ -83,8 +100,6 @@ export const getStatus = (userId) => {
             });
     }
 }
-
-
 export const updateStatus = (status) => {
 
     return (dispatch) => {
@@ -96,4 +111,25 @@ export const updateStatus = (status) => {
             });
     }
 }
+export const savePhoto = (file) => {
+
+    return async (dispatch) => {
+        const response = await profileAPI.savePhoto(file)
+                if (response.data.resultCode === 0) {
+                    dispatch(savePhotoSuccessAC(response.data.data.photos))
+                }
+    }
+}
+export const saveProfile = (profile) => async (dispatch, getState) => {
+        const response = await profileAPI.saveProfile(profile);
+        const userId = getState().auth.userId;
+
+        if (response.data.resultCode === 0) {
+            dispatch(getUserProfile(userId))
+        }
+        else {
+            return Promise.reject(response.data.messages[0])
+        }
+}
+
 export default profileReducer;

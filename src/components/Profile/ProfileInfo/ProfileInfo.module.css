@@ -1,7 +1,20 @@
 .descriptionBlock{
     padding: 10px;
+    font-family: Roboto;
+    font-size: 16px;
 }
 
 .header_content{
     height: 300px;
+}
+
+.img{
+    height: 150px;
+}
+
+.contacts{
+    padding-left: 10px;
+    padding-top: 10px;
+    font-family: Roboto;
+    font-size: 14px;
 }

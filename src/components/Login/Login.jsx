@@ -17,10 +17,7 @@ const Login = (props) => {
         props.login(formData.email, formData.password, formData.rememberMe, setStatus)
         console.log(formData.email)
     }
-/*    const onSubmit = values => {
-        props.login(values.email, values.password, values.rememberMe)
-        console.log(values)
-    }*/
+
     const validationSchema = Yup.object({
       email: Yup.string()
           .required("Enter your login to authorization")

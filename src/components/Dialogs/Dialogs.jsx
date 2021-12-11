@@ -45,7 +45,6 @@ const Dialogs = (props) => {
                     validationSchema={validationSchema}
                     onSubmit={onSubmit}>
                     {formik => {
-                        console.log("Formik props", formik)
                         return (
                     <Form>
                         <div>
