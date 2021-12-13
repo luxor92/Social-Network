@@ -1,5 +1,5 @@
 import React, {Suspense} from "react";
-import {BrowserRouter, Route} from "react-router-dom";
+import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import ProfileContainer from "./components/Profile/ProfileContainer";
@@ -32,17 +32,20 @@ class App extends React.Component {
                     <HeaderContainer/>
                     <Navbar/>
                     <div className='app-wrapper-content'>
-                        <Route path='/profile/:userId?' render={() => <ProfileContainer/>}/>
+                        <Switch>
+                            <Route path='/profile/:userId?' render={() => <ProfileContainer/>}/>
+                            <Route exact path='/' render={() => <Redirect from="/" to="/profile" />}/>
+                            <Suspense fallback={<div><Preloader/></div>}>
+                                <Route path='/dialogs' render={() => <DialogsContainer/>}/>
+                                <Route path='/news' render={() => <News/>}/>
+                                <Route path='/music' render={() => <Music/>}/>
+                                <Route path='/settings' render={() => <Settings/>}/>
+                                <Route path='/users' render={() => <UsersContainer/>}/>
+                            </Suspense>
 
-                        <Suspense fallback={<div><Preloader/></div>}>
-                            <Route path='/dialogs' render={() => <DialogsContainer/>}/>
-                            <Route path='/news' render={() => <News/>}/>
-                            <Route path='/music' render={() => <Music/>}/>
-                            <Route path='/settings' render={() => <Settings/>}/>
-                            <Route path='/users' render={() => <UsersContainer/>}/>
-                        </Suspense>
-
-                        <Route path='/login' render={() => <Login/>}/>
+                            <Route path='/login' render={() => <Login/>}/>
+                            <Route render={() => <div>Page not found</div>}/>
+                        </Switch>
                     </div>
                 </div>
             );

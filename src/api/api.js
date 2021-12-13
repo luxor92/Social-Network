@@ -64,3 +64,10 @@ export const profileAPI = {
         return instance.put("profile", profile)
     }
 }
+
+export const securityAPI = {
+    captcha() {
+        return instance.get(`security/get-captcha-url`)
+    }
+}
+

@@ -23,12 +23,9 @@ const ProfileDataForm = (props) => {
 
     const onSubmit = (formData) => {
         props.saveProfile(formData)
-            .then(
-                () => {
+            .then(() => {
                     props.deactivateEditMode()
-                }
-            )
-            .catch(error => alert(error))
+                })
         console.log(formData)
     }
 
