@@ -1,5 +1,6 @@
 // Декларирование костант, чтобы Webstorm подсказывал и были менее вероятны ошибки
 import {usersAPI} from "../api/api";
+import {UsersType} from "../types/types";
 
 const FOLLOW = 'social-network/users/FOLLOW';
 const UNFOLLOW = 'social-network/users/UNFOLLOW';
@@ -9,24 +10,24 @@ const SET_TOTAL_USERS_COUNT = 'social-network/users/SET_TOTAL_USERS_COUNT';
 const TOGGLE_IS_FETCHING = 'social-network/users/TOGGLE_IS_FETCHING';
 const TOGGLE_IS_FOLLOWING_PROGRESS = 'social-network/users/TOGGLE_IS_FOLLOWING_PROGRESS';
 
-
 // Данные (по сути пропсы), которые мы отправляем в раздел Users
 let initialState = {
-    users: [],
-    pageSize: 10,
-    totalUsersCount: 0,
-    currentPage: 1,
-    isFetching: true,
-    followingInProgress: [] // Disable кнопки, пока страница прогружает запросы
+    users: [] as Array<UsersType>,
+    pageSize: 10 as number,
+    totalUsersCount: 0 as number,
+    currentPage: 1 as number,
+    isFetching: true as boolean,
+    followingInProgress: [] as Array<number> // Disable кнопки, пока страница прогружает запросы
 };
+export type InitialStateType = typeof initialState
 
 // Код, который мы выполняем при выполнении Action-creators
-const usersReducer = (state = initialState, action) => {
+const usersReducer = (state = initialState, action: any): InitialStateType => {
     switch (action.type) {
         case FOLLOW:
             return {
                 ...state,
-                users: state.users.map(u => {
+                users: state.users.map((u:any) => {
                     if (u.id === action.userId) {
                         return {...u, followed: true}
                     }
@@ -36,7 +37,7 @@ const usersReducer = (state = initialState, action) => {
         case UNFOLLOW:
             return {
                 ...state,
-                users: state.users.map(u => {
+                users: state.users.map((u:any) => {
                     if (u.id === action.userId) {
                         return {...u, followed: false}
                     }
@@ -60,7 +61,7 @@ const usersReducer = (state = initialState, action) => {
                 ...state,
                 followingInProgress: action.isFetching
                     ? [...state.followingInProgress, action.userId]
-                    : state.followingInProgress.filter(id => id !== action.userId)
+                    : state.followingInProgress.filter((id: any) => id !== action.userId)
             }
         }
         default:
@@ -68,14 +69,49 @@ const usersReducer = (state = initialState, action) => {
     }
 }
 
+// Types
+type FollowSuccessType = {
+    type: typeof FOLLOW
+    userId: number
+}
+type UnFollowSuccessType = {
+    type: typeof UNFOLLOW
+    userId: number
+}
+type SetUsersType = {
+    type: typeof SET_USERS
+    users: Array<UsersType> | null
+}
+type SetCurrentPageType = {
+    type: typeof SET_CURRENT_PAGE
+    currentPage: number
+}
+type SetUsersTotalCountType = {
+    type: typeof SET_TOTAL_USERS_COUNT
+    count: number
+}
+type ToggleIsFetchingType = {
+    type: typeof TOGGLE_IS_FETCHING
+    isFetching: boolean
+}
+type ToggleFollowingProgressType = {
+    type: typeof TOGGLE_IS_FOLLOWING_PROGRESS
+    isFetching: boolean
+    userId: number
+}
+
 // Action-creators:
-export const followSuccess = (userId) => ({type: FOLLOW, userId})
-export const unfollowSuccess = (userId) => ({type: UNFOLLOW, userId})
-export const setUsers = (users) => ({type: SET_USERS, users})
-export const setCurrentPage = (currentPage) => ({type: SET_CURRENT_PAGE, currentPage: currentPage})
-export const setUsersTotalCount = (totalUsersCount) => ({type: SET_TOTAL_USERS_COUNT, count: totalUsersCount})
-export const toggleIsFetching = (isFetching) => ({type: TOGGLE_IS_FETCHING, isFetching: isFetching})
-export const toggleFollowingProgress = (isFetching, userId) => ({
+export const followSuccess = (userId: number): FollowSuccessType => ({type: FOLLOW, userId})
+export const unfollowSuccess = (userId: number): UnFollowSuccessType => ({type: UNFOLLOW, userId})
+export const setUsers = (users: Array<UsersType>): SetUsersType => ({type: SET_USERS, users})
+export const setCurrentPage = (currentPage: number): SetCurrentPageType =>
+    ({type: SET_CURRENT_PAGE, currentPage: currentPage})
+export const setUsersTotalCount = (totalUsersCount: number): SetUsersTotalCountType =>
+    ({type: SET_TOTAL_USERS_COUNT, count: totalUsersCount})
+export const toggleIsFetching = (isFetching: boolean): ToggleIsFetchingType =>
+    ({type: TOGGLE_IS_FETCHING, isFetching: isFetching})
+export const toggleFollowingProgress = (isFetching: boolean, userId: number): ToggleFollowingProgressType =>
+    ({
     type: TOGGLE_IS_FOLLOWING_PROGRESS,
     isFetching,
     userId
@@ -83,9 +119,9 @@ export const toggleFollowingProgress = (isFetching, userId) => ({
 
 // Thunks-creators:
 // Функция, принимающая какой-либо аргумент и возвращающая thunk-функцию
-export const requestUsers = (page, pageSize) => {
+export const requestUsers = (page: number, pageSize: number) => {
 
-    return async (dispatch) => {
+    return async (dispatch: any) => {
         dispatch(toggleIsFetching(true));
         dispatch(setCurrentPage(page));
 
@@ -95,10 +131,9 @@ export const requestUsers = (page, pageSize) => {
         dispatch(toggleIsFetching(false))
     }
 }
+export const follow = (userId: number) => {
 
-export const follow = (userId) => {
-
-    return async (dispatch) => {
+    return async (dispatch: any) => {
 
         dispatch(toggleFollowingProgress(true, userId));
 
@@ -110,10 +145,9 @@ export const follow = (userId) => {
         dispatch(toggleFollowingProgress(false, userId));
     }
 }
+export const unfollow = (userId: number) => {
 
-export const unfollow = (userId) => {
-
-    return async (dispatch) => {
+    return async (dispatch: any) => {
 
         dispatch(toggleFollowingProgress(true, userId));
         let response = await usersAPI.unfollow(userId)

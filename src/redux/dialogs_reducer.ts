@@ -2,7 +2,20 @@ const SEND_MESSAGE = 'social-network/dialogs/SEND-MESSAGE';
 const UPDATE_NEW_MESSAGE_BODY = 'social-network/dialogs/UPDATE-NEW-MESSAGE-BODY'
 const ADD_MESSAGE = 'social-network/dialogs/ADD-MESSAGE';
 
-let initialState = {
+type DialogType = {
+    id: number | null
+    name: string | null
+}
+type MessageType = {
+    id: number | null
+    message: string | null
+}
+export type InitialStateType = {
+    dialogs: Array<DialogType>
+    messages: Array<MessageType>
+    newMessageBody: string | null
+}
+let initialState: InitialStateType = {
     dialogs: [
         {id: 1, name: 'Jonny'},
         {id: 2, name: 'Kenny'},
@@ -19,7 +32,7 @@ let initialState = {
     newMessageBody: ''
 }
 
-const dialogsReducer = (state = initialState, action) => {
+const dialogsReducer = (state = initialState, action: any): InitialStateType => {
     switch (action.type) {
         case UPDATE_NEW_MESSAGE_BODY:
             return {
@@ -44,9 +57,26 @@ const dialogsReducer = (state = initialState, action) => {
     }
 }
 
-export const sendMessageCreator = (newMessageBody) => ({type:SEND_MESSAGE, newMessageBody: newMessageBody})
-export const updateNewMessageBodyCreator = (body) => ({type:UPDATE_NEW_MESSAGE_BODY, body: body})
-export const addNewMessageCreator = (newMessageBody) => ({type:ADD_MESSAGE, newMessageBody})
+type SendMessageCreatorType = {
+    type: typeof SEND_MESSAGE
+    newMessageBody: string
+}
+export const sendMessageCreator = (newMessageBody: string):SendMessageCreatorType =>
+    ({type:SEND_MESSAGE, newMessageBody: newMessageBody})
+
+type updateNewMessageBodyCreatorType = {
+    type: typeof UPDATE_NEW_MESSAGE_BODY
+    body: string
+}
+export const updateNewMessageBodyCreator = (body: string): updateNewMessageBodyCreatorType =>
+    ({type:UPDATE_NEW_MESSAGE_BODY, body: body})
+
+type addNewMessageCreatorType = {
+    type: typeof ADD_MESSAGE
+    newMessageBody: string
+}
+export const addNewMessageCreator = (newMessageBody: string): addNewMessageCreatorType =>
+    ({type:ADD_MESSAGE, newMessageBody})
 
 
 export default dialogsReducer;

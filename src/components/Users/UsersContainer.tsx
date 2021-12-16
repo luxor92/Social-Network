@@ -13,19 +13,43 @@ import {
     getTotalUsersCount,
     getUsers
 } from "../../redux/users_selectors";
+import {UsersType} from "../../types/types";
+import {AppStateType} from "../../redux/redux-store";
 
-class UsersContainer extends React.Component {
+type MapStatePropsType = {
+    currentPage: number
+    pageSize: number
+    isFetching: boolean
+    totalUsersCount: number
+    users: Array<UsersType>
+}
+type MapDispatchPropsType = {
+    followingInProgress: Array<number>
+    follow: () => void
+    unfollow: () => void
+    onPageChanged: (pageNumber: number) => void
+    setCurrentPage: (pageNumber: number) => void
+    getUsers: (currentPage: number, pageSize: number) => void
+}
+type OwnPropsType = {
+    pageTitle: string
+}
+
+type PropsType = MapStatePropsType & MapDispatchPropsType & OwnPropsType
+
+class UsersContainer extends React.Component<PropsType> {
     componentDidMount() {
         this.props.getUsers(this.props.currentPage, this.props.pageSize);
     }
 
-    onPageChanged = (pageNumber) => {
+    onPageChanged = (pageNumber: number) => {
         this.props.getUsers(pageNumber, this.props.pageSize);
         this.props.setCurrentPage(pageNumber)
     }
 
     render() {
         return <div>
+            <h2>{this.props.pageTitle}</h2>
             {this.props.isFetching ? <Preloader/> : null}
 
             <Users currentPage={this.props.currentPage}
@@ -52,7 +76,7 @@ class UsersContainer extends React.Component {
     }
 }*/
 
-let mapStateToProps = (state) => {
+let mapStateToProps = (state: AppStateType) => {
     return {
         // В функциональную компоненту придет пропс users со значениями из state.usersPage.users
         users: getUsers(state),

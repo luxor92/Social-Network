@@ -2,15 +2,27 @@ import styles from './Users.module.css';
 import React from "react";
 import {NavLink} from "react-router-dom";
 import Paginator from "../common/Paginator/Paginator";
+import {UsersType} from "../../types/types";
 
-let Users = (props) => {
+type PropsType = {
+    totalUsersCount: number
+    pageSize: number
+    currentPage: number
+    onPageChanged: (pageNumber: number) => void
+    users: Array<UsersType>
+    followingInProgress: Array<number>
+    follow: (userId: number) => void
+    unfollow: (userId: number) => void
+}
+
+let Users: React.FC<PropsType> = (props) => {
 
     return (<div>
 
         <Paginator currentPage={props.currentPage} onPageChanged={props.onPageChanged}
                     totalItemsCount={props.totalUsersCount} pageSize={props.pageSize}/>
 
-            {props.users.map(u => <div key={u.id}>
+            {props.users.map((u: any) => <div key={u.id}>
                     <span>
                     <div>
                         <NavLink to={'profile/' + u.id}>
@@ -21,12 +33,12 @@ let Users = (props) => {
                         </NavLink>
                     </div>
                     <div>
-                        {u.followed ? <button disabled={props.followingInProgress.some(id => id === u.id)}
+                        {u.followed ? <button disabled={props.followingInProgress.some((id: any) => id === u.id)}
                                               onClick={() => {
                                                   props.unfollow(u.id)
                                               }}> Unfollow </button> :
 
-                            <button disabled={props.followingInProgress.some(id => id === u.id)}
+                            <button disabled={props.followingInProgress.some((id: any) => id === u.id)}
                                     onClick={() => {
                                         props.follow(u.id)
                                     }}>Follow</button>
