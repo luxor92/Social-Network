@@ -1,6 +1,9 @@
 // Декларирование костант, чтобы Webstorm подсказывал и были менее вероятны ошибки
 import {usersAPI} from "../api/api";
 import {UsersType} from "../types/types";
+import {Dispatch} from "redux";
+import {ThunkAction} from "redux-thunk";
+import {AppStateType} from "./redux-store";
 
 const FOLLOW = 'social-network/users/FOLLOW';
 const UNFOLLOW = 'social-network/users/UNFOLLOW';
@@ -22,7 +25,7 @@ let initialState = {
 export type InitialStateType = typeof initialState
 
 // Код, который мы выполняем при выполнении Action-creators
-const usersReducer = (state = initialState, action: any): InitialStateType => {
+const usersReducer = (state = initialState, action: ActionTypes): InitialStateType => {
     switch (action.type) {
         case FOLLOW:
             return {
@@ -70,6 +73,8 @@ const usersReducer = (state = initialState, action: any): InitialStateType => {
 }
 
 // Types
+type ActionTypes = FollowSuccessType | UnFollowSuccessType | SetUsersType | SetCurrentPageType |
+    SetUsersTotalCountType | ToggleIsFetchingType | ToggleFollowingProgressType
 type FollowSuccessType = {
     type: typeof FOLLOW
     userId: number
@@ -80,7 +85,7 @@ type UnFollowSuccessType = {
 }
 type SetUsersType = {
     type: typeof SET_USERS
-    users: Array<UsersType> | null
+    users: Array<UsersType>
 }
 type SetCurrentPageType = {
     type: typeof SET_CURRENT_PAGE
@@ -119,9 +124,9 @@ export const toggleFollowingProgress = (isFetching: boolean, userId: number): To
 
 // Thunks-creators:
 // Функция, принимающая какой-либо аргумент и возвращающая thunk-функцию
-export const requestUsers = (page: number, pageSize: number) => {
+export const requestUsers = (page: number, pageSize: number): ThunkAction<Promise<void>, AppStateType, any, ActionTypes> => {
 
-    return async (dispatch: any) => {
+    return async (dispatch: Dispatch<ActionTypes>) => {
         dispatch(toggleIsFetching(true));
         dispatch(setCurrentPage(page));
 
@@ -131,9 +136,9 @@ export const requestUsers = (page: number, pageSize: number) => {
         dispatch(toggleIsFetching(false))
     }
 }
-export const follow = (userId: number) => {
+export const follow = (userId: number): ThunkAction<Promise<void>, AppStateType, any, ActionTypes> => {
 
-    return async (dispatch: any) => {
+    return async (dispatch: Dispatch<ActionTypes>) => {
 
         dispatch(toggleFollowingProgress(true, userId));
 
@@ -145,9 +150,9 @@ export const follow = (userId: number) => {
         dispatch(toggleFollowingProgress(false, userId));
     }
 }
-export const unfollow = (userId: number) => {
+export const unfollow = (userId: number): ThunkAction<Promise<void>, AppStateType, any, ActionTypes> => {
 
-    return async (dispatch: any) => {
+    return async (dispatch: Dispatch<ActionTypes>) => {
 
         dispatch(toggleFollowingProgress(true, userId));
         let response = await usersAPI.unfollow(userId)

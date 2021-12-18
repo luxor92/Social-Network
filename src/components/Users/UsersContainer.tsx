@@ -88,7 +88,6 @@ let mapStateToProps = (state: AppStateType) => {
     }
 }
 
-
 export default compose(withAuthRedirect,
     connect(mapStateToProps,
         {
