@@ -5,16 +5,25 @@ import * as Yup from "yup"
 import {connect} from "react-redux";
 import {getCaptchaUrlTC, login, logout} from "../../redux/auth_reducer";
 import {Redirect} from "react-router-dom";
+import {AppStateType} from "../../redux/redux-store";
 
-const Login = (props) => {
+
+type MapStatePropsType = {
+    isAuth: boolean
+    captchaUrl: string | null
+}
+type MapDispatchPropsType = {
+    login: (email: string, password: string, rememberMe: boolean, captcha: null | string) => void
+}
+const Login: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
     const initialValues = {
         email: "",
         password: "",
         rememberMe: false,
         captcha: null
     }
-    const onSubmit = (formData, {setStatus}) => {
-        props.login(formData.email, formData.password, formData.rememberMe, setStatus)
+    const onSubmit = (formData: any  /*{setStatus}*/) => {
+        props.login(formData.email, formData.password, formData.rememberMe, formData.captcha /*setStatus*/)
 /*        { props.captcha && alert(props.captcha)}
         console.log(props.captchaUrl)*/
     }
@@ -29,16 +38,6 @@ const Login = (props) => {
             .required("Enter the password to authorization"),
         rememberMe: Yup.boolean(),
     })
-    /*   const formik = useFormik({
-            initialValues: {
-                login: "",
-                password: "",
-                rememberMe: false,
-            },
-            onSubmit: values => {
-                console.log("Formik state", values)
-            }
-        })*/
 
     if (props.isAuth) {
         return <Redirect to={"/profile"}/>
@@ -79,7 +78,7 @@ const Login = (props) => {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: AppStateType) => ({
     isAuth: state.auth.isAuth,
     captchaUrl: state.auth.captchaUrl
 })

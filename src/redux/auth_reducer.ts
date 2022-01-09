@@ -1,5 +1,7 @@
 import {Dispatch} from "redux";
-import {authAPI, ResultCodeEnum, securityAPI} from "../api/api";
+import {ResultCodeEnum} from "../api/api";
+import {authAPI} from "../api/auth_api";
+import {securityAPI} from "../api/security_api";
 
 const SET_USER_DATA = 'social-network/auth/SET_USER_DATA';
 const GET_CAPTCHA_URL_SUCCESS = 'social-network/auth/GET_CAPTCHA_URL_SUCCESS';
@@ -91,7 +93,7 @@ export const logout = () => async (dispatch: any) => {
 }
 export const getCaptchaUrlTC = () => async (dispatch: any) => {
     const response = await securityAPI.captcha();
-    const captchaUrl = response.data.url;
+    const captchaUrl = response.url;
     dispatch(getCaptchaUrlAC(captchaUrl))
 }
 

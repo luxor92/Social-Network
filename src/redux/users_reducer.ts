@@ -1,9 +1,9 @@
 // Декларирование костант, чтобы Webstorm подсказывал и были менее вероятны ошибки
-import {usersAPI} from "../api/api";
 import {UsersType} from "../types/types";
 import {Dispatch} from "redux";
 import {ThunkAction} from "redux-thunk";
 import {AppStateType} from "./redux-store";
+import {usersAPI} from "../api/users_api";
 
 const FOLLOW = 'social-network/users/FOLLOW';
 const UNFOLLOW = 'social-network/users/UNFOLLOW';
@@ -73,6 +73,7 @@ const usersReducer = (state = initialState, action: ActionTypes): InitialStateTy
 }
 
 // Types
+// Вариант №1 реализации типов экшнов
 type ActionTypes = FollowSuccessType | UnFollowSuccessType | SetUsersType | SetCurrentPageType |
     SetUsersTotalCountType | ToggleIsFetchingType | ToggleFollowingProgressType
 type FollowSuccessType = {
@@ -104,8 +105,28 @@ type ToggleFollowingProgressType = {
     isFetching: boolean
     userId: number
 }
+// Вариант №2 реализации типов экшнов. Объявление в redux-store (не доделано)
+/*export const actions = {
+    followSuccess: (userId: number): FollowSuccessType => ({type: FOLLOW, userId}),
+    unfollowSuccess: (userId: number): UnFollowSuccessType => ({type: UNFOLLOW, userId}),
+    setUsers: (users: Array<UsersType>): SetUsersType => ({type: SET_USERS, users}),
+    setCurrentPage: (currentPage: number): SetCurrentPageType =>
+        ({type: SET_CURRENT_PAGE, currentPage: currentPage}),
+    setUsersTotalCount: (totalUsersCount: number): SetUsersTotalCountType =>
+        ({type: SET_TOTAL_USERS_COUNT, count: totalUsersCount}),
+    toggleIsFetching: (isFetching: boolean): ToggleIsFetchingType =>
+        ({type: TOGGLE_IS_FETCHING, isFetching: isFetching}),
+    toggleFollowingProgress: (isFetching: boolean, userId: number): ToggleFollowingProgressType =>
+        ({
+            type: TOGGLE_IS_FOLLOWING_PROGRESS,
+            isFetching,
+            userId
+        })
+}*/
+
 
 // Action-creators:
+// Typescript. Вариант №1
 export const followSuccess = (userId: number): FollowSuccessType => ({type: FOLLOW, userId})
 export const unfollowSuccess = (userId: number): UnFollowSuccessType => ({type: UNFOLLOW, userId})
 export const setUsers = (users: Array<UsersType>): SetUsersType => ({type: SET_USERS, users})
@@ -121,6 +142,22 @@ export const toggleFollowingProgress = (isFetching: boolean, userId: number): To
     isFetching,
     userId
 })
+// Typescript. Вариант №2
+/*export const followSuccess = (userId: number) => ({type: FOLLOW, userId})
+export const unfollowSuccess = (userId: number) => ({type: UNFOLLOW, userId})
+export const setUsers = (users: Array<UsersType>) => ({type: SET_USERS, users})
+export const setCurrentPage = (currentPage: number) =>
+    ({type: SET_CURRENT_PAGE, currentPage: currentPage})
+export const setUsersTotalCount = (totalUsersCount: number) =>
+    ({type: SET_TOTAL_USERS_COUNT, count: totalUsersCount})
+export const toggleIsFetching = (isFetching: boolean) =>
+    ({type: TOGGLE_IS_FETCHING, isFetching: isFetching})
+export const toggleFollowingProgress = (isFetching: boolean, userId: number) =>
+    ({
+        type: TOGGLE_IS_FOLLOWING_PROGRESS,
+        isFetching,
+        userId
+    })*/
 
 // Thunks-creators:
 // Функция, принимающая какой-либо аргумент и возвращающая thunk-функцию
@@ -143,7 +180,7 @@ export const follow = (userId: number): ThunkAction<Promise<void>, AppStateType,
         dispatch(toggleFollowingProgress(true, userId));
 
         let response = await usersAPI.follow(userId)
-        if (response.data.resultCode === 0) {
+        if (response.resultCode === 0) {
             dispatch(followSuccess(userId));
         }
 
@@ -156,11 +193,51 @@ export const unfollow = (userId: number): ThunkAction<Promise<void>, AppStateTyp
 
         dispatch(toggleFollowingProgress(true, userId));
         let response = await usersAPI.unfollow(userId)
-        if (response.data.resultCode === 0) {
+        if (response.resultCode === 0) {
             dispatch(unfollowSuccess(userId));
         }
         dispatch(toggleFollowingProgress(false, userId));
     }
 }
+
+// Если вариант №2 типизации
+/*export const requestUsers = (page: number, pageSize: number): ThunkAction<Promise<void>, AppStateType, any, ActionTypes> => {
+
+    return async (dispatch: Dispatch<ActionTypes>) => {
+        dispatch(actions.toggleIsFetching(true));
+        dispatch(actions.setCurrentPage(page));
+
+        let data = await usersAPI.getUsers(page, pageSize);
+        dispatch(actions.setUsers(data.items))
+        dispatch(actions.setUsersTotalCount(data.totalCount));
+        dispatch(actions.toggleIsFetching(false))
+    }
+}
+export const follow = (userId: number): ThunkAction<Promise<void>, AppStateType, any, ActionTypes> => {
+
+    return async (dispatch: Dispatch<ActionTypes>) => {
+
+        dispatch(toggleFollowingProgress(true, userId));
+
+        let response = await usersAPI.follow(userId)
+        if (response.data.resultCode === 0) {
+            dispatch(actions.followSuccess(userId));
+        }
+
+        dispatch(actions.toggleFollowingProgress(false, userId));
+    }
+}
+export const unfollow = (userId: number): ThunkAction<Promise<void>, AppStateType, any, ActionTypes> => {
+
+    return async (dispatch: Dispatch<ActionTypes>) => {
+
+        dispatch(actions.toggleFollowingProgress(true, userId));
+        let response = await usersAPI.unfollow(userId)
+        if (response.data.resultCode === 0) {
+            dispatch(actions.unfollowSuccess(userId));
+        }
+        dispatch(actions.toggleFollowingProgress(false, userId));
+    }
+}*/
 
 export default usersReducer;

@@ -1,7 +1,8 @@
 import { Dispatch } from "redux";
-import {profileAPI, usersAPI} from "../api/api";
 import {ThunkAction} from "redux-thunk";
 import {AppStateType} from "./redux-store";
+import {usersAPI} from "../api/users_api";
+import {profileAPI} from "../api/profile_api";
 
 const ADD_POST = 'social-network/profile/ADD-POST';
 const UPDATE_NEW_POST = 'social-network/profile/UPDATE-NEW-POST';
@@ -150,8 +151,8 @@ export const saveProfileSuccessAC = (profile: ProfileType): SaveProfileSuccessAC
 // Thunk-creators
 export const getUserProfile = (userId: number): ThunkAction<Promise<void>, AppStateType, any, ActionTypes> => {
     return async (dispatch: Dispatch<ActionTypes>) => {
-        let response = await usersAPI.getProfile(userId)
-        dispatch(setUserProfile(response.data))
+        let data = await profileAPI.getProfile(userId)
+        dispatch(setUserProfile(data))
     }
 }
 export const getStatus = (userId: number) => {
@@ -175,15 +176,15 @@ export const updateStatus = (status: string) => {
 export const savePhoto = (file: any): ThunkType => {
     return async (dispatch: Dispatch<ActionTypes>) => {
         const response = await profileAPI.savePhoto(file)
-                if (response.data.resultCode === 0) {
-                    dispatch(savePhotoSuccessAC(response.data.data.photos))
+                if (response.resultCode === 0) {
+                    dispatch(savePhotoSuccessAC(response.data.photos))
                 }
     }
 }
 export const saveProfile = (profile: ProfileType) => async (dispatch: any, getState: any) => {
         const response = await profileAPI.saveProfile(profile);
         const userId = getState().auth.userId;
-        if (response.data.resultCode === 0) {
+        if (response.resultCode === 0) {
             dispatch(getUserProfile(userId))
         }
 /*        else {
