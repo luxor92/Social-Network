@@ -5,16 +5,22 @@ import Message from "./Message/Message";
 import {Redirect} from "react-router-dom";
 import {ErrorMessage, Field, Form, Formik} from "formik"
 import * as Yup from "yup";
+import {InitialStateType} from "../../redux/dialogs_reducer";
 
-const Dialogs = (props) => {
-    let addNewMessage = (values) => {
+type PropsType = {
+    dialogsPage: InitialStateType,
+    sendMessage: (messageText: string) => void,
+}
+
+const Dialogs: React.FC<PropsType> = (props) => {
+    let addNewMessage = (values: {newMessageBody: string}) => {
         props.sendMessage(values.newMessageBody)
     }
 
     const initialValues = {
         newMessageBody: "",
     };
-    const onSubmit = (values, onSubmitProps) => {
+    const onSubmit = (values: any, onSubmitProps: any) => {
         addNewMessage(values)
         console.log("Submit props", onSubmitProps)
         onSubmitProps.setSubmitting(false)

@@ -1,23 +1,20 @@
 // import {authAPI} from "../api/api";
 import {getAuthUserData} from "./auth_reducer";
+import {InferActionsType} from "./redux-store";
 
-const INITIALIZED_SUCCESS = 'social-network/app/INITIALIZED_SUCCESS';
-
-export type InitialStateType = {
-    initialized: boolean
-}
-type InitializedSuccessActionType = {
-    type: typeof INITIALIZED_SUCCESS
-}
-
-let initialState: InitialStateType = {
+let initialState = {
     initialized: false
 };
+export type InitialStateType = typeof initialState
+type ActionsType = InferActionsType<typeof actions>
+export const actions = {
+    initializedSuccess: () => ({type: 'social-network/app/INITIALIZED_SUCCESS'} as const)
+}
 
 // После аргументов через двоеточие указан тип результата, возвращаемого
-const appReducer = (state = initialState, action: any): InitialStateType => {
+const appReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch(action.type) {
-        case INITIALIZED_SUCCESS:
+        case 'social-network/app/INITIALIZED_SUCCESS':
             return {
                 ...state,
                 initialized: true,
@@ -27,16 +24,13 @@ const appReducer = (state = initialState, action: any): InitialStateType => {
     }
 }
 
-// Action-creators:
-export const initializedSuccess = (): InitializedSuccessActionType => ({type: INITIALIZED_SUCCESS})
-
 // Thunks-creators:
 export const initializeApp = () => (dispatch: any) => {
     // Thunk-a с асинхронным запросом возвращает промис. После его получения мы запускаем инициализацию
    let promise = dispatch(getAuthUserData());
     // Когда все промисы зарезолвятся запускаем инициализацию
     Promise.all([promise]).then(() => {
-        dispatch(initializedSuccess())
+        dispatch(actions.initializedSuccess())
     })
 }
 

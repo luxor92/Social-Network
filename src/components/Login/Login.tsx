@@ -7,7 +7,6 @@ import {getCaptchaUrlTC, login, logout} from "../../redux/auth_reducer";
 import {Redirect} from "react-router-dom";
 import {AppStateType} from "../../redux/redux-store";
 
-
 type MapStatePropsType = {
     isAuth: boolean
     captchaUrl: string | null
@@ -15,6 +14,7 @@ type MapStatePropsType = {
 type MapDispatchPropsType = {
     login: (email: string, password: string, rememberMe: boolean, captcha: null | string) => void
 }
+
 const Login: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
     const initialValues = {
         email: "",
@@ -27,7 +27,6 @@ const Login: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
 /*        { props.captcha && alert(props.captcha)}
         console.log(props.captchaUrl)*/
     }
-
     const validationSchema = Yup.object({
         email: Yup.string()
             .required("Enter your login to authorization")

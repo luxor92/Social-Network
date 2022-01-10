@@ -1,6 +1,4 @@
-const SEND_MESSAGE = 'social-network/dialogs/SEND-MESSAGE';
-const UPDATE_NEW_MESSAGE_BODY = 'social-network/dialogs/UPDATE-NEW-MESSAGE-BODY'
-const ADD_MESSAGE = 'social-network/dialogs/ADD-MESSAGE';
+import {InferActionsType} from "./redux-store";
 
 type DialogType = {
     id: number | null
@@ -10,6 +8,7 @@ type MessageType = {
     id: number | null
     message: string | null
 }
+type ActionsType = InferActionsType<typeof actions>
 export type InitialStateType = {
     dialogs: Array<DialogType>
     messages: Array<MessageType>
@@ -32,20 +31,20 @@ let initialState: InitialStateType = {
     newMessageBody: ''
 }
 
-const dialogsReducer = (state = initialState, action: any): InitialStateType => {
+const dialogsReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
-        case UPDATE_NEW_MESSAGE_BODY:
+        case 'social-network/dialogs/UPDATE-NEW-MESSAGE-BODY':
             return {
                 ...state,
                 newMessageBody: action.body
             };
-        case SEND_MESSAGE:
+        case 'social-network/dialogs/SEND-MESSAGE':
             let body = action.newMessageBody;
             return {
                 ...state,
                 messages: [...state.messages, {id: 6, message: body}]
             };
-        case ADD_MESSAGE:
+        case 'social-network/dialogs/ADD-MESSAGE':
             let bodik = action.newMessageBody;
             return {
                 ...state,
@@ -57,26 +56,10 @@ const dialogsReducer = (state = initialState, action: any): InitialStateType => 
     }
 }
 
-type SendMessageCreatorType = {
-    type: typeof SEND_MESSAGE
-    newMessageBody: string
+export const actions = {
+    sendMessage: (newMessageBody: string) => ({type:'social-network/dialogs/SEND-MESSAGE', newMessageBody: newMessageBody} as const),
+    updateNewMessageBodyCreator: (body: string) => ({type:'social-network/dialogs/UPDATE-NEW-MESSAGE-BODY', body: body} as const),
+    addNewMessageCreator: (newMessageBody: string) => ({type:'social-network/dialogs/ADD-MESSAGE', newMessageBody} as const)
 }
-export const sendMessageCreator = (newMessageBody: string):SendMessageCreatorType =>
-    ({type:SEND_MESSAGE, newMessageBody: newMessageBody})
-
-type updateNewMessageBodyCreatorType = {
-    type: typeof UPDATE_NEW_MESSAGE_BODY
-    body: string
-}
-export const updateNewMessageBodyCreator = (body: string): updateNewMessageBodyCreatorType =>
-    ({type:UPDATE_NEW_MESSAGE_BODY, body: body})
-
-type addNewMessageCreatorType = {
-    type: typeof ADD_MESSAGE
-    newMessageBody: string
-}
-export const addNewMessageCreator = (newMessageBody: string): addNewMessageCreatorType =>
-    ({type:ADD_MESSAGE, newMessageBody})
-
 
 export default dialogsReducer;

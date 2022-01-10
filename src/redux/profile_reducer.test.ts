@@ -1,4 +1,4 @@
-import profileReducer, {addPostAC, deletePostAC} from "./profile_reducer";
+import profileReducer, {actions} from "./profile_reducer";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "../App";
@@ -8,12 +8,14 @@ let state = {
         {id: 1, message: 'Hello world!', likesCount: 15},
         {id: 2, message: 'White Power', likesCount: 88},
         {id: 3, message: 'Don\'t worry be happy', likesCount: 55}],
-    newPostText: ""
+    newPostText: "" as string | null,
+    profile: null,
+    status: "" as string | null
 };
 
 it("Length of posts should be incremented", () => {
     // 1. Подготовка исходных данных (Test data)
-    let action = addPostAC("Lucky")
+    let action = actions.addPostAC("Lucky")
 
     // 2. Action
     let newState = profileReducer(state, action)
@@ -24,7 +26,7 @@ it("Length of posts should be incremented", () => {
 
 it("New post message should be actual", () => {
     // 1. Подготовка исходных данных (Test data)
-    let action = addPostAC("Lucky")
+    let action = actions.addPostAC("Lucky")
 
     // 2. Action
     let newState = profileReducer(state, action)
@@ -35,7 +37,7 @@ it("New post message should be actual", () => {
 
 it("After deleting length of posts should be decrement", () => {
     // 1. Подготовка исходных данных (Test data)
-    let action = deletePostAC(3)
+    let action = actions.deletePostAC(3)
 
     // 2. Action
     let newState = profileReducer(state, action)
